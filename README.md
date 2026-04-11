@@ -13,6 +13,10 @@ This app generates the combination of keys necessary to configure various types 
 
 - **System**: Web browser with JavaScript support.
 
+<br/>
+<h2>Screenshot</h2>
+<img src="docs/screenshot1.png" />
+
 ## Installation
 
 To run the app (HTML + Javascript).
@@ -43,3 +47,4 @@ Contributions are welcome! Please fork the repository and send a pull request.
 |---------|-------------|---------------------------|
 | 1.0.0.0 | 2026/04/11 | First commit. |
 | 1.0.0.1 | 2026/04/11 | Auto commit. |
+| 1.0.0.2 | 2026/04/11 | Screenshot added. |
