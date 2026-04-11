@@ -7,15 +7,14 @@ This app generates the combination of keys necessary to configure various types 
 ## Features
 
 - **Compatibility**: Works with Junon's PLL, Pira's PLL, CD40103B+CD4046B CMOS AM PLL, etc.
-- **multiplatform app**: Runs directly in the web browser with javascript support.
+- **Multiplatform App**: Runs directly in the web browser with javascript support.
+
+<br/>
+<img src="docs/screenshot1.png" />
 
 ## Requirements
 
 - **System**: Web browser with JavaScript support.
-
-<br/>
-<h2>Screenshot</h2>
-<img src="docs/screenshot1.png" />
 
 ## Installation
 
