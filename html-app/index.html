@@ -1,0 +1,385 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+<head>
+<title id="app_title">PLL CONFIG</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<link href="data:image/x-icon;base64,YourBase64StringHere" rel="icon" type="image/x-icon"/>
+<style>
+
+    .app_info{
+      text-align: center;
+      color: #000000;
+    }
+
+    .divheader {
+      color: #00008B; 
+    }
+
+    .frame {
+        position: absolute;
+        width: 300px;
+        height: 595px;
+        border: 4px solid #000050;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 5px;
+        background-image: linear-gradient(to top, #808080, transparent, #808080);       
+    }
+
+    .txt_freq {
+        position: relative;
+        text-align: center;
+        font-size: 45px;
+        height: 60px;
+        width: 140px;
+        margin: 0 0 2px 18px;
+        display: inline;
+        color: white;
+        background-color: #000000;
+    }
+
+    .txt_unit {
+        position: relative;
+        text-align: center;
+        font-size: 45px;
+        height: 60px;
+        width: 100px;
+        margin: 0 0 2px 2px;
+        display: inline;
+        color: white;
+        background-color: #000000;
+    }
+
+    .SWsContainer {
+        position: relative;
+        width: 320px;
+        margin: 0 0 2px 1px; 
+    }
+
+    .SWsSubContainer {
+        position: relative;
+        left: 16px;
+        width: 300px; 
+    }
+
+    .RadioGroupPllMode {
+        position: relative;
+        top: 125px;
+        width: 244px;
+        height: 244px;
+        border: 3px solid #000000;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 0 0 10px 12px; 
+        color: #000000;
+    }
+
+    .SWsImage {
+        position: absolute;
+        top: 27px;
+        left: 15px;
+        width: 261px; 
+    }
+
+    .SWImage {
+        position: relative;
+        top:65px; 
+        width: 20px; 
+        display: inline;
+        margin: 0 0 0 11px;
+    }
+
+</style>
+</head>
+<body>
+<form id="formulario">
+
+<div class="frame">
+<div class="divheader" id="divheader"><h3 id="app_title2" class="app_info"></h3></div>
+
+<input type="text" id="txt_freq" name="txt_freq" autocomplete="off" class="txt_freq" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value="91.9"/>
+<input type="text" id="txt_unit" name="txt_unit" autocomplete="off" class="txt_unit" value="MHz"/>
+
+<div class="SWsContainer" id="SWsContainer">
+<img src="pictures/SWsImage.png" alt="SWsImage" class="SWsImage">
+<div class="SWsSubContainer" id="SWsSubContainer"></div>
+</div>
+
+<div class="RadioGroupPllMode">
+<legend>PLL Mode</legend>
+<input type="radio" name="pll_mode" id="PLL_MODE_VHF" value="PLL_MODE_VHF" checked/>VHF<br>
+<input type="radio" name="pll_mode" id="PLL_MODE_VHF_EXT_0" value="PLL_MODE_VHF_EXT_0" />VHF Extended 0<br>
+<input type="radio" name="pll_mode" id="PLL_MODE_VHF_EXT_1" value="PLL_MODE_VHF_EXT_1" />VHF Extended 1<br>
+<input type="radio" name="pll_mode" id="PLL_MODE_PX" value="PLL_MODE_PX" />PX<br>
+<input type="radio" name="pll_mode" id="PLL_MODE_MF" value="PLL_MODE_MF" />MF<br>
+<p id="msgs" name="msgs"></p>
+</div>
+
+<div class="divfooter" id="divfooter"></div>
+</div>
+
+</form>
+<script type="text/javascript">
+
+  const app_title = document.getElementById("app_title");
+  const app_title2 = document.getElementById("app_title2");
+  const txt_freq = document.getElementById("txt_freq");
+  const txt_unit = document.getElementById("txt_unit");
+  const div = document.getElementById("SWsSubContainer");
+  const radios = document.getElementsByTagName('input');
+  const msgs = document.getElementById("msgs");
+  const on = "pictures/on.png";
+  const off = "pictures/off.png";
+
+  const APP_NAME = "PLL CONFIG";
+
+  app_title.innerHTML = APP_NAME;
+  app_title2.innerHTML = APP_NAME;
+
+  // PLL_MODE_VHF
+  // PLL_MODE_VHF_EXT_0
+  // PLL_MODE_VHF_EXT_1
+  // PLL_MODE_MF
+  let Pll_Current_Mode = "PLL_MODE_VHF";
+  let Pll_Last_Mode = "";
+
+  const SWITCH_COUNT = 8;
+  const sw = new Array(SWITCH_COUNT);
+
+  const INIT_FREQ = 91.9;
+
+  const PLL_VHF_FREQ_MAX = 108;
+  const PLL_VHF_FREQ_MIN = 82.5;
+
+  const PLL_VHF_EXT_1_FREQ_MAX = 108;
+  const PLL_VHF_EXT_1_FREQ_MIN = 56.9;
+
+  const PLL_VHF_EXT_0_FREQ_MAX = 108;
+  const PLL_VHF_EXT_0_FREQ_MIN = 57;
+
+  const PLL_PX_FREQ_MAX = 27860;
+  const PLL_PX_FREQ_MIN = 26960;
+
+  const PLL_MF_FREQ_MAX = 1780;
+  const PLL_MF_FREQ_MIN = 590;
+
+  const PLL_FREQ_MAX = 100000;
+  const PLL_FREQ_MIN = 0.1;
+
+  const LEGISLATION_FREQ_MAX = 108;
+  const LEGISLATION_FREQ_MIN = 76;
+
+  let Freq_Max = PLL_FREQ_MAX;
+  let Freq_Min = PLL_FREQ_MIN;
+  let frequency = 0;
+  let oldfrequency = 0;
+  let switches = 0;
+  let oldswitches = 0;
+
+  function updateScreen(){
+
+    frequency = txt_freq.value;
+
+    frequency = frequency.replace(',','.');
+
+     // Read radio band btns
+    for (let i = 0; i < radios.length; i++) {
+       if (radios[i].type === 'radio' && radios[i].checked) {
+          Pll_Current_Mode = radios[i].value; 
+
+          if (Pll_Current_Mode === "PLL_MODE_PX") {
+             txt_unit.value = "KHz";      
+          } else if (Pll_Current_Mode === "PLL_MODE_MF") {
+             txt_unit.value = "KHz";      
+          } else {
+             txt_unit.value = "MHz";
+          }      
+       }
+    }
+ 
+    // Verify changes
+    if ((frequency != oldfrequency) || (Pll_Last_Mode != Pll_Current_Mode)){
+      Pll_Last_Mode = Pll_Current_Mode;
+      oldfrequency = frequency;
+      freq2sw(frequency);
+      oldswitches = switches;
+    }
+
+    // Verify changes
+    if ((switches != oldswitches)  || (Pll_Last_Mode != Pll_Current_Mode)) {
+      Pll_Last_Mode = Pll_Current_Mode;
+      oldswitches = switches;   
+      sw2freq(switches);
+    }
+
+
+    txt_freq.focus();  
+  }
+
+
+  function bit_test(num, bit){
+    return ((num>>bit) % 2 != 0)
+  }
+
+
+  function bit_set(num, bit){
+    return num | 1<<bit;
+  }
+
+
+  function bit_clear(num, bit){
+    return num & ~(1<<bit);
+  }
+
+
+  function bit_toggle(num, bit){
+    return bit_test(num, bit) ? bit_clear(num, bit) : bit_set(num, bit);
+  }
+
+
+  function sw_click(event){
+    // switch click to switch variable
+    let i = parseInt(event.target.id);
+    switches = bit_toggle(switches, i);
+    printSWs(switches); 
+  }
+
+
+  function printSWs(SWs){
+    let sw_tmp = SWs;
+    for (let i = 0; i < SWITCH_COUNT; i++) {
+      if (sw_tmp & 1) { 
+        sw[i].src = on;
+      }else{
+        sw[i].src = off;
+      }
+      sw_tmp >>= 1;
+    }
+  }
+  
+
+  function create_dipsw(){
+    let sw_tmp = 0;
+    for (let i = 0; i < SWITCH_COUNT; i++) {
+      if (sw[i]) sw[i].remove();
+      sw[i] = document.createElement("img");
+      sw[i].addEventListener("click", sw_click);
+      sw[i].id = i;
+      if (sw_tmp & 1) { 
+        sw[i].src = on;
+      }else{
+        sw[i].src = off;
+      }
+      sw_tmp >>= 1;
+      sw[i].className = "SWImage";    
+      div.appendChild(sw[i]);
+    }
+  }
+
+
+  function sw2freq(sw) {
+
+    let sw_tmp = sw;
+
+    // PLL MODE VHF
+    if (Pll_Current_Mode === "PLL_MODE_VHF") {
+      txt_freq.value = (1080 - sw_tmp) / 10;
+    }
+
+    // PLL MODE VHF Extended 0
+    if (Pll_Current_Mode === "PLL_MODE_VHF_EXT_0") {
+      sw_tmp <<= 1;
+      txt_freq.value = (1080 - sw_tmp) / 10;
+    }
+
+    // PLL MODE VHF Extended 1
+    if (Pll_Current_Mode === "PLL_MODE_VHF_EXT_1") {
+      sw_tmp <<= 1;
+      sw_tmp |= 1;
+      txt_freq.value = (1080 - sw_tmp) / 10;
+    }
+
+    // PLL MODE PX
+    if (Pll_Current_Mode === "PLL_MODE_PX") {
+      txt_freq.value = PLL_PX_FREQ_MAX - (sw_tmp * 5);
+    }
+
+    // PLL MODE MF
+    if (Pll_Current_Mode === "PLL_MODE_MF") {
+      txt_freq.value = sw_tmp * 10;
+    }
+
+  }
+
+
+  function freq2sw(freq){
+
+    if (freq < PLL_FREQ_MIN) return;
+    if (freq > PLL_FREQ_MAX) return;
+
+    txt_freq.style.color = '#FF0000'; // Red
+    txt_unit.style.color = '#FF0000'; // Red
+    msgs.style.color = '#FF0000'; // Red
+    msgs.innerHTML = "Error: Invalid frequency!!!";
+
+    // PLL MODE VHF
+    if (Pll_Current_Mode === "PLL_MODE_VHF") {
+      if (freq < PLL_VHF_FREQ_MIN) return;
+      if (freq > PLL_VHF_FREQ_MAX) return;
+      switches = 1080 - (freq * 10);
+    }
+
+    // PLL MODE VHF Extended 0
+    if (Pll_Current_Mode === "PLL_MODE_VHF_EXT_0") {
+      if (((freq * 10) & 1) != 0) return;
+      if (freq < PLL_VHF_EXT_0_FREQ_MIN) return;
+      if (freq > PLL_VHF_EXT_0_FREQ_MAX) return;
+      switches = 1080 - (freq * 10);
+      switches >>= 1;
+    }
+
+    // PLL MODE VHF Extended 1
+    if (Pll_Current_Mode === "PLL_MODE_VHF_EXT_1") {
+      if (((freq * 10) & 1) === 0) return;
+      if (freq < PLL_VHF_EXT_1_FREQ_MIN) return;
+      if (freq > PLL_VHF_EXT_1_FREQ_MAX) return;
+      switches = 1080 - (freq * 10);
+      switches >>= 1;
+    }
+
+    // PLL MODE PX
+    if (Pll_Current_Mode === "PLL_MODE_PX") {
+      if (((freq % 10) != 5) && ((freq % 10) != 0)) return;
+      if (freq < PLL_PX_FREQ_MIN) return;
+      if (freq > PLL_PX_FREQ_MAX) return;
+      switches = (PLL_PX_FREQ_MAX - freq) / 5;
+    }
+
+    // PLL MODE MF
+    if (Pll_Current_Mode === "PLL_MODE_MF") {
+      if ((freq % 10) != 0) return;
+      if (freq < PLL_MF_FREQ_MIN) return;
+      if (freq > PLL_MF_FREQ_MAX) return;
+      switches = freq / 10;
+    }
+
+    printSWs(switches);
+
+    txt_freq.style.color = 'white';
+    txt_unit.style.color = 'white';
+    msgs.style.color = '#000000'; // Black
+    msgs.innerHTML = "Frequency Valid"; 
+    txt_freq.focus();
+  }
+
+  setInterval(updateScreen, 100);
+
+  create_dipsw();
+
+  txt_freq.focus();
+
+</script>
+</body>
+</html>
+
