@@ -47,3 +47,4 @@ Contributions are welcome! Please fork the repository and send a pull request.
 | 1.0.0.0 | 2026/04/11 | First commit. |
 | 1.0.0.1 | 2026/04/11 | Auto commit. |
 | 1.0.0.2 | 2026/04/11 | Screenshot added. |
+| 1.0.0.3 | 2026/04/12 | images embedded in HTML |
