@@ -1,4 +1,3 @@
-<!--
   Project: PLL CONFIG
   File: FILENAME_PLACEHOLDER
   Version: VERSION_PLACEHOLDER
@@ -6,4 +5,3 @@
   License: GNU GPL v3.0
   Developed by: Junon M. (2008-2026)
   Description: Embedded systems and RF signal processing.
---> 
