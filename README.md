@@ -50,3 +50,4 @@ Contributions are welcome! Please fork the repository and send a pull request.
 | 1.0.0.3 | 2026/04/12 | images embedded in HTML |
 | 1.0.0.4 | 2026/04/12 | Status msg removed. |
 | 1.0.0.5 | 2026/04/12 | Auto commit. |
+| 1.0.0.6 | 2026/04/25 | Screenshot updated. |
